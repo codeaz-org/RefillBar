@@ -1,5 +1,7 @@
 # UsageBar
 
+**[usagebar.codeaz.org](https://usagebar.codeaz.org)** · a free tool from [CodeAZ](https://www.codeaz.org/)
+
 A macOS menu bar app that shows how much of your Claude, Amp and Grok usage you have left.
 
 It loads each provider's own usage page in a small floating window, reloads it on a timer, and draws the progress bars it finds as tiny meters in the menu bar. There are no API keys or tokens to set up: you sign in to each site once inside the window, the same way you would in a browser.
@@ -50,6 +52,12 @@ Edit the `sources` array at the top of `main.swift` and rebuild. Any page that s
 - The app is ad-hoc signed and not notarized, so build it yourself rather than passing the `.app` around.
 
 This is a personal tool shared as-is, with no support promised.
+
+## Made by CodeAZ
+
+UsageBar is a free tool from [CodeAZ](https://www.codeaz.org/), a studio that makes websites and web apps.
+
+[Website](https://www.codeaz.org/) · [Projects](https://www.codeaz.org/proiecte) · [Blog](https://www.codeaz.org/blog) · [YouTube](https://www.youtube.com/@codeaz95) · [More on GitHub](https://github.com/codeaz-org)
 
 ## License
 
