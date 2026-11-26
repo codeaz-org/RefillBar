@@ -4,9 +4,17 @@ A macOS menu bar app that shows how much of your Claude, Amp and Grok usage you 
 
 It loads each provider's own usage page in a small floating window, reloads it on a timer, and draws the progress bars it finds as tiny meters in the menu bar. There are no API keys or tokens to set up: you sign in to each site once inside the window, the same way you would in a browser.
 
+## Install
+
+```sh
+curl -fsSL https://usagebar.codeaz.org/install.sh | bash
+```
+
+This downloads the latest release into `/Applications` and opens it. More at [usagebar.codeaz.org](https://usagebar.codeaz.org).
+
 ## Build
 
-Needs macOS 12 or later and the Xcode Command Line Tools (`xcode-select --install`).
+Needs macOS 14 or later and the Xcode Command Line Tools (`xcode-select --install`).
 
 ```sh
 git clone https://github.com/codeaz-org/UsageBar.git

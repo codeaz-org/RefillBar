@@ -1,0 +1,7 @@
+{
+  // The landing page at usagebar.codeaz.org: static files only, no Worker code.
+  "name": "usagebar",
+  "compatibility_date": "2026-11-01",
+  "assets": { "directory": "./site" },
+  "routes": [{ "pattern": "usagebar.codeaz.org", "custom_domain": true }]
+}

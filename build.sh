@@ -12,7 +12,12 @@ APP="UsageBar.app"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS"
 
-swiftc -O main.swift -o "$APP/Contents/MacOS/UsageBar" -framework Cocoa -framework WebKit
+# Universal binary, so one build runs on both Apple Silicon and Intel Macs.
+for arch in arm64 x86_64; do
+  swiftc -O main.swift -target "$arch-apple-macos14.0" -o "$APP/Contents/MacOS/UsageBar-$arch" -framework Cocoa -framework WebKit
+done
+lipo -create "$APP/Contents/MacOS/UsageBar-arm64" "$APP/Contents/MacOS/UsageBar-x86_64" -output "$APP/Contents/MacOS/UsageBar"
+rm "$APP/Contents/MacOS/UsageBar-arm64" "$APP/Contents/MacOS/UsageBar-x86_64"
 
 cat > "$APP/Contents/Info.plist" <<'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
@@ -26,7 +31,7 @@ cat > "$APP/Contents/Info.plist" <<'EOF'
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>CFBundleShortVersionString</key><string>1.0</string>
   <key>CFBundleVersion</key><string>1</string>
-  <key>LSMinimumSystemVersion</key><string>12.0</string>
+  <key>LSMinimumSystemVersion</key><string>14.0</string>
   <key>LSUIElement</key><true/>
   <key>NSHighResolutionCapable</key><true/>
 </dict>

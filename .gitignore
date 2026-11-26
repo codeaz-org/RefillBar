@@ -1,2 +1,4 @@
 UsageBar.app/
 .DS_Store
+.wrangler/
+UsageBar.zip
