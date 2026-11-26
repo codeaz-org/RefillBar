@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>UsageBar: your Claude, Amp and Grok usage in the menu bar</title>
+<title>RefillBar: your Claude, Amp and Grok usage in the menu bar</title>
 <meta name="description" content="A free, open source macOS menu bar app that shows how much of your Claude, Amp and Grok usage is left and when it resets.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23101418'/%3E%3Ctext x='32' y='42' font-family='monospace' font-size='26' font-weight='700' text-anchor='middle' fill='%232E5BFF'%3EAZ%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -84,20 +84,20 @@
 <header class="top">
   <a class="brand" href="https://www.codeaz.org/" aria-label="CodeAZ home">
     <svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" fill="#101418"/><text x="32" y="42" font-family="monospace" font-size="26" font-weight="700" text-anchor="middle" fill="#2E5BFF">AZ</text></svg>
-    CodeAZ <small>/ UsageBar</small>
+    CodeAZ <small>/ RefillBar</small>
   </a>
   <nav aria-label="CodeAZ">
     <a href="https://www.codeaz.org/proiecte">Projects</a>
-    <a href="https://github.com/codeaz-org/UsageBar">GitHub</a>
+    <a href="https://github.com/codeaz-org/RefillBar">GitHub</a>
     <a href="https://www.youtube.com/@codeaz95">YouTube</a>
   </nav>
 </header>
 <main>
   <p class="eyebrow">A free tool from CodeAZ</p>
   <h1>See your Claude, Amp and Grok usage in the menu bar</h1>
-  <p class="lede">UsageBar is a small macOS app that shows how much of each plan you have used and when it resets. No API keys: you sign in to each site once, like in a browser.</p>
+  <p class="lede">RefillBar is a small macOS app that shows how much of each plan you have used and when it resets. No API keys: you sign in to each site once, like in a browser.</p>
 
-  <div class="menu" role="img" aria-label="Example of the UsageBar menu: three sites, each with usage meters, percent used, and time until reset.">
+  <div class="menu" role="img" aria-label="Example of the RefillBar menu: three sites, each with usage meters, percent used, and time until reset.">
     <div class="bar-top" aria-hidden="true">
       <svg width="92" height="16" viewBox="0 0 92 16" fill="currentColor">
         <text x="0" y="12" font-size="10" font-weight="600" font-family="-apple-system, sans-serif">C</text>
@@ -125,13 +125,13 @@
   <h2>Install</h2>
   <p>Open Terminal, paste this line and press Return. It downloads the app into Applications and opens it.</p>
   <div class="install">
-    <code id="cmd">curl -fsSL https://usagebar.codeaz.org/install.sh | bash</code>
+    <code id="cmd">curl -fsSL https://refillbar.codeaz.org/install.sh | bash</code>
     <button type="button" id="copy">Copy</button>
   </div>
   <p class="small">Needs macOS 14 or later. Built for both Apple Silicon and Intel Macs. You can <a href="/install.sh">read the script</a> first: it is 20 lines.</p>
 
   <h2>Why a Terminal line and not a download button?</h2>
-  <p>The app is free and not signed with a paid Apple developer certificate, so macOS blocks it when it is downloaded through a browser. Installing from Terminal avoids that block. If you prefer, <a href="https://github.com/codeaz-org/UsageBar/releases/latest/download/UsageBar.zip">download the zip</a> and then allow it under System Settings, Privacy &amp; Security, Open Anyway. Or <a href="https://github.com/codeaz-org/UsageBar#build">build it from source</a>, which is one file of Swift.</p>
+  <p>The app is free and not signed with a paid Apple developer certificate, so macOS blocks it when it is downloaded through a browser. Installing from Terminal avoids that block. If you prefer, <a href="https://github.com/codeaz-org/RefillBar/releases/latest/download/RefillBar.zip">download the zip</a> and then allow it under System Settings, Privacy &amp; Security, Open Anyway. Or <a href="https://github.com/codeaz-org/RefillBar#build">build it from source</a>, which is one file of Swift.</p>
 
   <h2>What it does</h2>
   <ul>

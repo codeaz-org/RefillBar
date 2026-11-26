@@ -1,6 +1,6 @@
-# UsageBar
+# RefillBar
 
-**[usagebar.codeaz.org](https://usagebar.codeaz.org)** · a free tool from [CodeAZ](https://www.codeaz.org/)
+**[refillbar.codeaz.org](https://refillbar.codeaz.org)** · a free tool from [CodeAZ](https://www.codeaz.org/)
 
 A macOS menu bar app that shows how much of your Claude, Amp and Grok usage you have left.
 
@@ -8,31 +8,31 @@ It loads each provider's own usage page in a small floating window, reloads it o
 
 In the menu bar:
 
-![UsageBar in the menu bar: a letter per site followed by small usage meters](screenshots/menubar.png)
+![RefillBar in the menu bar: a letter per site followed by small usage meters](screenshots/menubar.png)
 
 Click it for the details:
 
-![The UsageBar menu listing each limit with percent used and time until reset](screenshots/menu.png)
+![The RefillBar menu listing each limit with percent used and time until reset](screenshots/menu.png)
 
 ## Install
 
 ```sh
-curl -fsSL https://usagebar.codeaz.org/install.sh | bash
+curl -fsSL https://refillbar.codeaz.org/install.sh | bash
 ```
 
-This downloads the latest release into `/Applications` and opens it. More at [usagebar.codeaz.org](https://usagebar.codeaz.org).
+This downloads the latest release into `/Applications` and opens it. More at [refillbar.codeaz.org](https://refillbar.codeaz.org).
 
 ## Build
 
 Needs macOS 14 or later and the Xcode Command Line Tools (`xcode-select --install`).
 
 ```sh
-git clone https://github.com/codeaz-org/UsageBar.git
-cd UsageBar
+git clone https://github.com/codeaz-org/RefillBar.git
+cd RefillBar
 ./build.sh
 ```
 
-This compiles `main.swift` into `UsageBar.app` next to the script and opens it. Sign in to each pane the first time; logins persist between launches.
+This compiles `main.swift` into `RefillBar.app` next to the script and opens it. Sign in to each pane the first time; logins persist between launches.
 
 ## Use
 
@@ -55,7 +55,7 @@ This is a personal tool shared as-is, with no support promised.
 
 ## Made by CodeAZ
 
-UsageBar is a free tool from [CodeAZ](https://www.codeaz.org/), a studio that makes websites and web apps.
+RefillBar is a free tool from [CodeAZ](https://www.codeaz.org/), a studio that makes websites and web apps.
 
 [Website](https://www.codeaz.org/) · [Projects](https://www.codeaz.org/proiecte) · [Blog](https://www.codeaz.org/blog) · [YouTube](https://www.youtube.com/@codeaz95) · [More on GitHub](https://github.com/codeaz-org)
 

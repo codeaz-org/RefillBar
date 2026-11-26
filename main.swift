@@ -1,4 +1,4 @@
-// UsageBar: a small floating window + menu bar item that shows your
+// RefillBar: a small floating window + menu bar item that shows your
 // Claude, Amp and Grok usage pages in compact form and keeps them refreshed.
 // Build with ./build.sh (needs Xcode Command Line Tools).
 
@@ -42,7 +42,7 @@ let safariUA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.
 // reload, so the progress bars stay in view.
 let keepScrollJS = #"""
 (function () {
-  var KEY = 'usagebar-scroll:' + location.pathname + location.hash;
+  var KEY = 'refillbar-scroll:' + location.pathname + location.hash;
   var saved = {};
   try { saved = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
   var restoring = true;
@@ -394,12 +394,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         panel.contentView = split
 
         panel.center()
-        panel.setFrameAutosaveName("UsageBarPanel")
+        panel.setFrameAutosaveName("RefillBarPanel")
 
         // Give the three panes equal height the first time; after that the
         // divider positions you drag to are remembered.
-        let hadLayout = defaults.object(forKey: "NSSplitView Subview Frames UsageBarSplit") != nil
-        split.autosaveName = "UsageBarSplit"
+        let hadLayout = defaults.object(forKey: "NSSplitView Subview Frames RefillBarSplit") != nil
+        split.autosaveName = "RefillBarSplit"
         if !hadLayout {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
@@ -583,7 +583,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(floatItem)
 
         menu.addItem(.separator())
-        menu.addItem(NSMenuItem(title: "Quit UsageBar", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        menu.addItem(NSMenuItem(title: "Quit RefillBar", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         statusItem.menu = menu
     }
 
@@ -601,7 +601,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let appItem = NSMenuItem()
         let appMenu = NSMenu()
         appMenu.addItem(NSMenuItem(title: "Close Window", action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w"))
-        appMenu.addItem(NSMenuItem(title: "Quit UsageBar", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        appMenu.addItem(NSMenuItem(title: "Quit RefillBar", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         appItem.submenu = appMenu
         main.addItem(appItem)
 
