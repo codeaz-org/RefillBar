@@ -49,7 +49,7 @@ Edit the `sources` array at the top of `main.swift` and rebuild. Any page that s
 - The meters are read from each page's HTML. When a provider redesigns its usage page, the readings can break until the code is updated.
 - The app sends a Safari user agent so sign-in pages accept the embedded web view. A provider can block that at any time.
 - It reloads pages in your signed-in session on a timer. Check that this is fine under each provider's terms, and keep the interval reasonable.
-- The app is ad-hoc signed and not notarized, so build it yourself rather than passing the `.app` around.
+- The app is not signed with a paid Apple developer certificate. If you download the zip through a browser, macOS blocks it until you allow it under System Settings, Privacy & Security. The install line above and building from source both avoid that.
 
 This is a personal tool shared as-is, with no support promised.
 
