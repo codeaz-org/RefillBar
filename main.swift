@@ -94,10 +94,48 @@ let keepScrollJS = #"""
 })();
 """#
 
-// Reads every progress bar on the page as {label, pct}, where pct is always
+// Reads every progress bar on the page as {label, pct, at, hasTime}. pct is always
 // "percent used" (bars that count down, like Amp's "99% remaining", are flipped).
+// at is when the bar resets (ms since 1970, or null if the page does not say);
+// hasTime is false when the page only gives a day ("Resets Nov 29").
 let readBarsJS = #"""
 (function () {
+  var MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+  var DAYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+  // Turns the words after "resets" into a time. Formats seen so far:
+  // "at 1:20 PM", "Tue 3:00 PM", "Nov 29", "around Dec 5, 2026 at 3:54 PM", "in 3 hr 12 min".
+  function parseReset(s) {
+    var now = new Date(), m;
+    if (/^\s*in\b/i.test(s)) {
+      var ms = 0, re = /(\d+)\s*(d|h|m)/gi, unit = { d: 864e5, h: 36e5, m: 6e4 };
+      while ((m = re.exec(s))) ms += m[1] * unit[m[2].toLowerCase()];
+      return ms ? { at: now.getTime() + ms, hasTime: true } : null;
+    }
+    var d = new Date(now);
+    d.setHours(0, 0, 0, 0);
+    var t = s.match(/(\d{1,2})(?::(\d{2}))?\s*([ap])\.?m\b/i) || s.match(/(\d{1,2}):(\d{2})/);
+    if (t) {
+      var h = +t[1];
+      if (t[3]) h = h % 12 + (/p/i.test(t[3]) ? 12 : 0);
+      d.setHours(h, +(t[2] || 0));
+    }
+    var mo = s.match(/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+(\d{1,2})(?:,?\s+(\d{4}))?/i);
+    var wd = s.match(/\b(sun|mon|tue|wed|thu|fri|sat)(?:[a-z]*day)?\b/i);
+    if (mo) {
+      d.setMonth(MONTHS.indexOf(mo[1].toLowerCase()), +mo[2]);
+      if (mo[3]) d.setFullYear(+mo[3]);
+      else if (d.getTime() < now.getTime() - 864e5) d.setFullYear(d.getFullYear() + 1);
+    } else if (wd) {
+      d.setDate(d.getDate() + (DAYS.indexOf(wd[1].toLowerCase()) - d.getDay() + 7) % 7);
+      if (d <= now) d.setDate(d.getDate() + 7);
+    } else if (t) {
+      if (d <= now) d.setDate(d.getDate() + 1);
+    } else {
+      return null;
+    }
+    return { at: d.getTime(), hasTime: !!t };
+  }
+
   var out = [];
   document.querySelectorAll('[role=progressbar],[role=meter],progress').forEach(function (el) {
     var max = parseFloat(el.getAttribute('aria-valuemax') || el.getAttribute('max') || 100);
@@ -112,7 +150,17 @@ let readBarsJS = #"""
     }
     var pct = now / max * 100;
     if (/remaining|left/i.test(text)) pct = 100 - pct;
-    out.push({ label: label.replace(/:.*$/, '').trim().slice(0, 40), pct: pct });
+    // The reset line can sit a few levels up and be shared by several bars (Amp).
+    // ponytail: 8 levels is enough for today's pages, raise it if a reset is missed.
+    var reset = null;
+    for (var q = el.parentElement, i = 0; !reset && q && q !== document.body && i < 8; q = q.parentElement, i++) {
+      (q.innerText || '').split('\n').some(function (line) {
+        var m = line.match(/\bresets?\b(.*)/i);
+        return m && (reset = parseReset(m[1]));
+      });
+    }
+    out.push({ label: label.replace(/:.*$/, '').trim().slice(0, 40), pct: pct,
+               at: reset && reset.at, hasTime: !!(reset && reset.hasTime) });
   });
   return JSON.stringify(out);
 })()
@@ -123,7 +171,7 @@ let readBarsJS = #"""
 final class Pane: NSView, WKNavigationDelegate, WKUIDelegate {
     let source: Source
     let webView: WKWebView
-    private(set) var bars: [(label: String, pct: Double)] = []
+    private(set) var bars: [(label: String, pct: Double, reset: Date?, hasTime: Bool)] = []
     private let status = NSTextField(labelWithString: "loading…")
     private let timeFormat: DateFormatter = {
         let f = DateFormatter()
@@ -227,7 +275,10 @@ final class Pane: NSView, WKNavigationDelegate, WKUIDelegate {
         webView.evaluateJavaScript(readBarsJS) { [weak self] result, _ in
             if let data = (result as? String)?.data(using: .utf8),
                let list = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]], !list.isEmpty {
-                self?.bars = list.map { ($0["label"] as? String ?? "", $0["pct"] as? Double ?? 0) }
+                self?.bars = list.map {
+                    ($0["label"] as? String ?? "", $0["pct"] as? Double ?? 0,
+                     ($0["at"] as? Double).map { Date(timeIntervalSince1970: $0 / 1000) }, $0["hasTime"] as? Bool ?? false)
+                }
             }
             done()
         }
@@ -398,7 +449,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             pane.readBars { [weak self] in
                 left -= 1
                 guard let self = self, left == 0 else { return }
-                let now = self.panes.map { p in p.bars.map { "\($0.label)=\(Int($0.pct.rounded()))" }.joined(separator: ",") }
+                let now = self.panes.map { p in p.bars.map { "\($0.label)=\(Int($0.pct.rounded()))\(self.resetText($0.reset, hasTime: $0.hasTime))" }.joined(separator: ",") }
                     .joined(separator: "|")
                 guard now != self.shownBars else { return }
                 self.shownBars = now
@@ -443,6 +494,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.button?.title = ""
     }
 
+    /// "  ·  resets in 2h 5m (Tue 1 Dec, 15:00)", or "" when the page gives no reset.
+    /// It changes every minute, which is also what makes the menu rebuild.
+    private func resetText(_ at: Date?, hasTime: Bool) -> String {
+        guard let at = at, at > Date() else { return "" }
+        let f = DateFormatter()
+        f.setLocalizedDateFormatFromTemplate(hasTime ? "EEEdMMMjm" : "EEEdMMM")
+        let left: String
+        if hasTime {
+            let mins = Int(at.timeIntervalSinceNow / 60) + 1
+            let d = mins / 1440, h = mins % 1440 / 60, m = mins % 60
+            left = d > 0 ? "\(d)d \(h)h" : h > 0 ? "\(h)h \(m)m" : "\(m)m"
+        } else {
+            // Only the day is known, so count whole days.
+            let days = Calendar.current.dateComponents([.day], from: Calendar.current.startOfDay(for: Date()), to: at).day ?? 0
+            left = days == 1 ? "1 day" : "\(days) days"
+        }
+        return "  ·  resets in \(left) (\(f.string(from: at)))"
+    }
+
     @objc private func refreshNow() { panes.forEach { $0.refresh(force: true) } }
 
     @objc private func pickInterval(_ sender: NSMenuItem) {
@@ -478,7 +548,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             for bar in pane.bars {
                 let filled = Int((min(max(bar.pct, 0), 100) / 10).rounded())
                 let meter = String(repeating: "█", count: filled) + String(repeating: "░", count: 10 - filled)
-                menu.addItem(NSMenuItem(title: "\(meter)  \(Int(bar.pct.rounded()))% used  \(bar.label)", action: nil, keyEquivalent: ""))
+                menu.addItem(NSMenuItem(title: "\(meter)  \(Int(bar.pct.rounded()))% used  \(bar.label)\(resetText(bar.reset, hasTime: bar.hasTime))", action: nil, keyEquivalent: ""))
             }
         }
         menu.addItem(.separator())

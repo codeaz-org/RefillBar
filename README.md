@@ -19,7 +19,7 @@ This compiles `main.swift` into `UsageBar.app` next to the script and opens it. 
 ## Use
 
 - **Menu bar item:** one letter per site, then one vertical meter per usage bar on that page. Fuller means more used. Meters turn orange at 70% and red at 90%.
-- **Menu:** the same readings as text, plus refresh interval, page zoom, keep-on-top and show/hide window.
+- **Menu:** the same readings as text, each with how long until it resets and when (if the page says), plus refresh interval, page zoom, keep-on-top and show/hide window.
 - **↻ in a pane:** returns that pane to its usage page and reloads it. Automatic refreshes pause while you are elsewhere on the site, for example mid sign-in.
 
 ## Change the sites
